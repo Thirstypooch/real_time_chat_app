@@ -1,4 +1,3 @@
-import React from 'react';
 import Sidebar from './components/Sidebar/Sidebar';
 import ChatWindow from './components/Chat/ChatWindow';
 import { ChatProvider } from './context/ChatContext';

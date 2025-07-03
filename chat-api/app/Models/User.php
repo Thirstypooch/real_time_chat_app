@@ -24,6 +24,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'avatar',
+        'api_token',
+        'is_ai',
     ];
 
     /**

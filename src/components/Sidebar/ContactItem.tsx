@@ -1,30 +1,27 @@
 import React from 'react';
 import { Conversation } from '../../types';
-import UserStatus from './UserStatus';
-import { useChat } from '../../context/ChatContext';
+import { useChatStore } from '../../stores/chatStore';
 
 interface ContactItemProps {
   conversation: Conversation;
 }
 
 const ContactItem: React.FC<ContactItemProps> = ({ conversation }) => {
-  const { activeConversation, setActiveConversation, currentUser, markAsRead } = useChat();
-  
-  // Get the other participant (not the current user)
-  const contact = conversation.participants.find(p => p.id !== currentUser.id);
-  
-  if (!contact) return null;
-  
-  const isActive = activeConversation?.id === conversation.id;
+  const currentUser = useChatStore(state => state.currentUser);
+  const activeConversationId = useChatStore(state => state.activeConversationId);
+  const setActiveConversationId = useChatStore(state => state.setActiveConversationId);
+
+  const contact = conversation.participants.find(p => p.id !== currentUser?.id);
+
+  if (!contact || !currentUser) return null;
+
+  const isActive = activeConversationId?.toString() === conversation.id;
   const hasUnread = conversation.unreadCount > 0;
-  
+
   const handleClick = () => {
-    setActiveConversation(conversation);
-    if (hasUnread) {
-      markAsRead(conversation.id);
-    }
+    setActiveConversationId(Number(conversation.id));
   };
-  
+
   return (
     <div
       className={`flex items-center p-3 cursor-pointer transition-all duration-200 ${
@@ -52,7 +49,7 @@ const ContactItem: React.FC<ContactItemProps> = ({ conversation }) => {
           />
         </div>
       </div>
-      
+
       <div className="ml-3 flex-1 overflow-hidden">
         <div className="flex justify-between items-start">
           <h3 className="font-medium text-gray-900 dark:text-white truncate">{contact.name}</h3>
@@ -65,7 +62,7 @@ const ContactItem: React.FC<ContactItemProps> = ({ conversation }) => {
             </span>
           )}
         </div>
-        
+
         <div className="flex justify-between items-center mt-1">
           {conversation.lastMessage && (
             <p className="text-sm text-gray-600 dark:text-gray-300 truncate">
@@ -73,7 +70,7 @@ const ContactItem: React.FC<ContactItemProps> = ({ conversation }) => {
               {conversation.lastMessage.text}
             </p>
           )}
-          
+
           {hasUnread && (
             <div className="bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
               {conversation.unreadCount}

@@ -1,19 +1,33 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Search } from 'lucide-react';
-import { useChat } from '../../context/ChatContext';
+import { useQuery } from '@tanstack/react-query';
+import apiClient from '../../services/api';
+import { useChatStore } from '../../stores/chatStore';
 import ContactItem from './ContactItem';
+import { Conversation } from '../../types';
 
 const ContactList: React.FC = () => {
-  const { conversations } = useChat();
   const [searchTerm, setSearchTerm] = useState('');
-  
+    const setConversations = useChatStore(state => state.setConversations);
+
+  const { data: conversations = [] } = useQuery<Conversation[]>({
+    queryKey: ['conversations'],
+    queryFn: () => apiClient.get('/conversations').then(response => response.data),
+  });
+
+    useEffect(() => {
+        if (conversations) {
+            setConversations(conversations);
+        }
+    }, [conversations, setConversations]);
+
   const filteredConversations = searchTerm.trim() === ''
     ? conversations
     : conversations.filter(conv => {
-        const contact = conv.participants.find(p => p.id !== 'user-1');
+        const contact = conv.participants.find(p => p.id !== useChatStore.getState().currentUser?.id);
         return contact?.name.toLowerCase().includes(searchTerm.toLowerCase());
       });
-  
+
   return (
     <div className="h-full flex flex-col">
       <div className="p-3">
@@ -30,13 +44,13 @@ const ContactList: React.FC = () => {
           />
         </div>
       </div>
-      
+
       <div className="flex-1 overflow-y-auto">
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
           {filteredConversations.map(conversation => (
             <ContactItem key={conversation.id} conversation={conversation} />
           ))}
-          
+
           {filteredConversations.length === 0 && (
             <div className="p-4 text-center text-gray-500 dark:text-gray-400">
               No contacts found matching "{searchTerm}"

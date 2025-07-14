@@ -1,19 +1,21 @@
-import Sidebar from './components/Sidebar/Sidebar';
-import ChatWindow from './components/Chat/ChatWindow';
-import { ChatProvider } from './context/ChatContext';
+import { Routes, Route } from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
+import ChatPage from './pages/ChatPage';
+import ProtectedRoute from './components/ProtectedRoute';
+import { useSyncUser } from './hooks/useAuth';
 
 function App() {
+    useSyncUser();
+
   return (
-    <ChatProvider>
-      <div className="h-screen overflow-hidden flex bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
-        <div className="w-80 h-full">
-          <Sidebar />
-        </div>
-        <div className="flex-1 h-full">
-          <ChatWindow />
-        </div>
-      </div>
-    </ChatProvider>
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/" element={
+        <ProtectedRoute>
+          <ChatPage />
+        </ProtectedRoute>
+      } />
+    </Routes>
   );
 }
 

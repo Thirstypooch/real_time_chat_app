@@ -1,10 +1,14 @@
 import React from 'react';
 import { Settings, Moon, Sun } from 'lucide-react';
-import { useChat } from '../../context/ChatContext';
+import { useChatStore } from '../../stores/chatStore';
 
 const Profile: React.FC = () => {
-  const { currentUser, theme, toggleTheme } = useChat();
-  
+  const currentUser = useChatStore(state => state.currentUser);
+  const theme = useChatStore(state => state.theme);
+  const toggleTheme = useChatStore(state => state.toggleTheme);
+
+  if (!currentUser) return null;
+
   return (
     <div className="p-3 border-t border-gray-200 dark:border-gray-700">
       <div className="flex items-center justify-between">
@@ -22,7 +26,7 @@ const Profile: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="flex items-center space-x-2">
           <button 
             className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
@@ -35,7 +39,7 @@ const Profile: React.FC = () => {
               <Sun className="h-5 w-5 text-gray-600 dark:text-gray-300" />
             )}
           </button>
-          
+
           <button 
             className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             aria-label="Settings"

@@ -1,22 +1,22 @@
 import React from 'react';
 import { Check, CheckCheck } from 'lucide-react';
 import { Message } from '../../types';
-import { useChat } from '../../context/ChatContext';
+import { useChatStore } from '../../stores/chatStore';
 
 interface MessageBubbleProps {
   message: Message;
   isLast: boolean;
 }
 
-const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isLast }) => {
-  const { currentUser } = useChat();
-  const isCurrentUser = message.senderId === currentUser.id;
-  
+const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
+  const currentUser = useChatStore(state => state.currentUser);
+  const isCurrentUser = currentUser && message.senderId === currentUser.id;
+
   const formattedTime = new Date(message.timestamp).toLocaleTimeString([], { 
     hour: '2-digit', 
     minute: '2-digit' 
   });
-  
+
   return (
     <div className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'} mb-4`}>
       <div 
@@ -31,7 +31,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isLast }) => {
           <span className={isCurrentUser ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'}>
             {formattedTime}
           </span>
-          
+
           {isCurrentUser && (
             <span className="ml-1">
               {message.read ? (

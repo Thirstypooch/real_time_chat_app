@@ -10,7 +10,7 @@ interface MessageBubbleProps {
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
   const currentUser = useChatStore(state => state.currentUser);
-  const isCurrentUser = currentUser && message.senderId === currentUser.id;
+  const isCurrentUser = currentUser && message.sender.id === currentUser.id;
 
   const formattedTime = new Date(message.created_at).toLocaleTimeString([], {
     hour: '2-digit', 

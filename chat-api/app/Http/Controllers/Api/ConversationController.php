@@ -24,8 +24,8 @@ class ConversationController extends Controller
 
     public function messages(Request $request, Conversation $conversation)
     {
-        if (! $conversation->participants()->where('user_id', $request->user()->id)->exists()) {
-            return response()->json(['message' => 'Forbidden'], 403);
+        if (! $conversation-> participants()-> where('user_id', $request-> user()-> id)-> exists()) {
+            return response()-> json(['message' => 'Forbidden'], 403);
         }
         $messages = $conversation->messages()->with('sender')->get();
 

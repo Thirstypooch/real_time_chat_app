@@ -1,5 +1,5 @@
 export interface User {
-  id: string;
+  id: number;
   name: string;
   avatar: string;
   status: 'online' | 'offline' | 'away';
@@ -7,11 +7,12 @@ export interface User {
 }
 
 export interface Message {
-  id: string;
+  id: number;
   senderId: string;
   content: string;
   created_at: string;
   read: boolean;
+  sender: User;
 }
 
 export interface Conversation {

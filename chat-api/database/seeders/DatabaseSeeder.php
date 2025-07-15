@@ -33,10 +33,13 @@ class DatabaseSeeder extends Seeder
         ]);
 
 
-        $humanConversation = Conversation::create();
-        $humanConversation->participants()->attach([$user1->id, $user2->id]);
+        $conversationWithJane = Conversation::create();
+        $conversationWithJane->participants()->attach([$mainUser->id, $user1->id]);
 
-        $this->call([
+        $conversationWithRichard = Conversation::create();
+        $conversationWithRichard->participants()->attach([$mainUser->id, $user2->id]);
+
+        $this-> call([
             AiPersonaSeeder::class,
         ]);
     }

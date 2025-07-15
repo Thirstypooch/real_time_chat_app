@@ -55,7 +55,7 @@ const ContactItem: React.FC<ContactItemProps> = ({ conversation }) => {
           <h3 className="font-medium text-gray-900 dark:text-white truncate">{contact.name}</h3>
           {conversation.lastMessage && (
             <span className="text-xs text-gray-500 dark:text-gray-400">
-              {new Date(conversation.lastMessage.timestamp).toLocaleTimeString([], { 
+              {new Date(conversation.lastMessage.created_at).toLocaleTimeString([], {
                 hour: '2-digit', 
                 minute: '2-digit' 
               })}
@@ -67,7 +67,7 @@ const ContactItem: React.FC<ContactItemProps> = ({ conversation }) => {
           {conversation.lastMessage && (
             <p className="text-sm text-gray-600 dark:text-gray-300 truncate">
               {conversation.lastMessage.senderId === currentUser.id ? 'You: ' : ''}
-              {conversation.lastMessage.text}
+              {conversation.lastMessage.content}
             </p>
           )}
 

@@ -7,5 +7,5 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('conversation.{conversationId}', function ($user, $conversationId) {
-    return $user->conversations()->where('conversation_id', $conversationId)->exists();
+    return $user->conversations()->where('conversations.id', $conversationId)->exists();
 });

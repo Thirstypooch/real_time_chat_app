@@ -12,7 +12,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
   const currentUser = useChatStore(state => state.currentUser);
   const isCurrentUser = currentUser && message.senderId === currentUser.id;
 
-  const formattedTime = new Date(message.timestamp).toLocaleTimeString([], { 
+  const formattedTime = new Date(message.created_at).toLocaleTimeString([], {
     hour: '2-digit', 
     minute: '2-digit' 
   });
@@ -26,7 +26,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
             : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-bl-none'
         }`}
       >
-        <p className="text-sm mb-1">{message.text}</p>
+        <p className="text-sm mb-1">{message.content}</p>
         <div className="flex items-center justify-end space-x-1 text-xs">
           <span className={isCurrentUser ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'}>
             {formattedTime}

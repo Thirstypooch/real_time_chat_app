@@ -10,8 +10,6 @@ class Message extends Model
 {
     use HasFactory;
 
-    public mixed $conversation_id;
-
     /**
      * The attributes that are mass assignable.
      *

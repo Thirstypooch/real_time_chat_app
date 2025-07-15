@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
@@ -29,12 +28,13 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'api_token' => Str::random(80),
         ]);
+
+        $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([
             'user' => $user,
-            'token' => $user->api_token,
+            'token' => $token,
         ], 201);
     }
 
@@ -51,27 +51,23 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($request->password, $user-> password)) {
             return response()->json(['email' => 'Invalid credentials'], 401);
         }
 
-        // Generate a new token on each login
-        $user->api_token = Str::random(80);
-        $user->save();
+        $token = $user-> createToken('auth-token')-> plainTextToken;
 
         return response()->json([
             'user' => $user,
-            'token' => $user->api_token,
+            'token' => $token,
         ]);
     }
 
     public function logout(Request $request): JsonResponse
     {
-        $user = $request->user();
-        $user->api_token = null; // Invalidate the token
-        $user->save();
+        $request-> user()-> currentAccessToken()-> delete();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()-> json(['message' => 'Successfully logged out']);
     }
 
     public function user(Request $request): JsonResponse

@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 repomix-output.xml
 .junie/*
+.env
+.bolt
+repomix-output-frontend.xml
+chat-api/repomix-output-backend.xml

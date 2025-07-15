@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Conversation;
@@ -15,7 +14,6 @@ class AiPersonaSeeder extends Seeder
      */
     public function run(): void
     {
-        // Find the main human user we created in DatabaseSeeder
         $humanUser = User::where('email', 'test@example.com')->first();
 
         if (! $humanUser) {
@@ -27,27 +25,24 @@ class AiPersonaSeeder extends Seeder
             [
                 'name' => 'Bolt - The Mentor',
                 'email' => 'bolt@ai.test',
-                'avatar' => '/avatars/bolt.png',
+                // Using Michael Brown's avatar
+                'avatar' => 'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
                 'password' => Hash::make('password'),
-                'is_ai' => true, // We'll add this column later if needed
+                'is_ai' => true,
             ],
             [
                 'name' => 'Spark - The Brainstormer',
                 'email' => 'spark@ai.test',
-                'avatar' => '/avatars/spark.png',
+                // Using Emma Davis's avatar
+                'avatar' => 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
                 'password' => Hash::make('password'),
                 'is_ai' => true,
             ],
         ];
 
         foreach ($aiPersonas as $personaData) {
-            // Create the AI user
             $aiUser = User::create($personaData);
-
-            // Create a new conversation between the human and the AI
             $conversation = Conversation::create();
-
-            // Attach both users to the conversation
             $conversation->participants()->attach([$humanUser->id, $aiUser->id]);
         }
     }

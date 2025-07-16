@@ -12,11 +12,11 @@ class ConversationController extends Controller
     {
         $user = $request->user();
 
-        $conversations = $user->conversations()
+        $conversations = $user-> conversations()
             ->with(['participants' => function ($query) use ($user) {
                 $query->where('users.id', '!=', $user->id);
             }])
-            ->with('latestMessage')
+            ->with('latestMessage.sender')
             ->get();
 
         return response()->json($conversations);
@@ -24,9 +24,6 @@ class ConversationController extends Controller
 
     public function messages(Request $request, Conversation $conversation)
     {
-        if (! $conversation-> participants()-> where('user_id', $request-> user()-> id)-> exists()) {
-            return response()-> json(['message' => 'Forbidden'], 403);
-        }
         $messages = $conversation->messages()->with('sender')->get();
 
         return response()->json($messages);

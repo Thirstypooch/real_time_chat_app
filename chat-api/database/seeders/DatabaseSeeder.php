@@ -13,31 +13,31 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Main user, gets John Doe's avatar
-        $mainUser = User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'avatar' => 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+        $users = collect([
+            User::factory()-> create([
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+                'avatar' => 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+            ]),
+            User::factory()-> create([
+                'name' => 'Jane Doe',
+                'email' => 'jane@example.com',
+                'avatar' => 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+            ]),
+            User::factory()-> create([
+                'name' => 'Richard Roe',
+                'email' => 'richard@example.com',
+                'avatar' => 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+            ]),
         ]);
 
-        $user1 = User::factory()->create([
-            'name' => 'Jane Doe',
-            'email' => 'jane@example.com',
-            'avatar' => 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-        ]);
 
-        $user2 = User::factory()->create([
-            'name' => 'Richard Roe',
-            'email' => 'richard@example.com',
-            'avatar' => 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-        ]);
-
-
-        $conversationWithJane = Conversation::create();
-        $conversationWithJane->participants()->attach([$mainUser->id, $user1->id]);
-
-        $conversationWithRichard = Conversation::create();
-        $conversationWithRichard->participants()->attach([$mainUser->id, $user2->id]);
+        for ($i = 0; $i < $users-> count(); $i++) {
+            for ($j = $i + 1; $j < $users-> count(); $j++) {
+                $conversation = Conversation::create();
+                $conversation-> participants()-> attach([$users[$i]-> id, $users[$j]-> id]);
+            }
+        }
 
         $this-> call([
             AiPersonaSeeder::class,

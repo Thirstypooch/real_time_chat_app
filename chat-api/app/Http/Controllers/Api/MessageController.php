@@ -14,9 +14,6 @@ class MessageController extends Controller
 {
     public function store(Request $request, Conversation $conversation): JsonResponse
     {
-        if (! $conversation->participants()->where('user_id', $request->user()->id)->exists()) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
 
         $validator = Validator::make($request->all(), [
             'content' => ['required', 'string'],
@@ -27,8 +24,8 @@ class MessageController extends Controller
         }
 
         $message = Message::create([
-            'conversation_id' => $conversation->id,
-            'sender_id' => $request->user()->id,
+            'conversation_id' => $conversation-> id,
+            'sender_id' => $request->user()-> id,
             'content' => $request->input('content'),
         ]);
 

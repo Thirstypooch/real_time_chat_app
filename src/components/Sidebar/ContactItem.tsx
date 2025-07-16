@@ -66,7 +66,7 @@ const ContactItem: React.FC<ContactItemProps> = ({ conversation }) => {
         <div className="flex justify-between items-center mt-1">
           {conversation.lastMessage && (
             <p className="text-sm text-gray-600 dark:text-gray-300 truncate">
-              {conversation.lastMessage.senderId === currentUser.id ? 'You: ' : ''}
+              {conversation.lastMessage.sender.id ===   currentUser.id ? 'You: ' : ''}
               {conversation.lastMessage.content}
             </p>
           )}

@@ -1,11 +1,13 @@
 import React from 'react';
-import { Settings, Moon, Sun } from 'lucide-react';
+import { Settings, Moon, Sun, LogOut} from 'lucide-react';
 import { useChatStore } from '../../stores/chatStore';
+import { useLogout } from '../../hooks/useAuth';
 
 const Profile: React.FC = () => {
   const currentUser = useChatStore(state => state.currentUser);
   const theme = useChatStore(state => state.theme);
   const toggleTheme = useChatStore(state => state.toggleTheme);
+  const { mutate: logout } = useLogout();
 
   if (!currentUser) return null;
 
@@ -45,6 +47,14 @@ const Profile: React.FC = () => {
             aria-label="Settings"
           >
             <Settings className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+          </button>
+
+          <button
+              onClick={() => logout()}
+              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Logout"
+          >
+            <LogOut className="h-5 w-5 text-gray-600 dark:text-gray-300" />
           </button>
         </div>
       </div>

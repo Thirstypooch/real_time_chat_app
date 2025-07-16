@@ -8,7 +8,7 @@ export interface User {
 
 export interface Message {
   id: number;
-  senderId: string;
+  senderId: number;
   content: string;
   created_at: string;
   read: boolean;
@@ -16,7 +16,7 @@ export interface Message {
 }
 
 export interface Conversation {
-  id: string;
+  id: number;
   participants: User[];
   messages: Message[];
   lastMessage?: Message;

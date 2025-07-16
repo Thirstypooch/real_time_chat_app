@@ -2,15 +2,21 @@ import React from 'react';
 import { Phone, Video, MoreVertical } from 'lucide-react';
 import { useChatStore } from '../../stores/chatStore';
 import UserStatus from '../Sidebar/UserStatus';
-import { User } from '../../types';
+import {Conversation, User} from '../../types';
+import {useQuery} from "@tanstack/react-query";
+import apiClient from "../../services/api.ts";
 
 const ChatHeader: React.FC = () => {
   const currentUser = useChatStore(state => state.currentUser);
-  const conversations = useChatStore(state => state.conversations);
   const activeConversationId = useChatStore(state => state.activeConversationId);
 
+  const { data: conversations = [] } = useQuery<Conversation[]>({
+    queryKey: ['conversations'],
+    queryFn: () => apiClient.get('/conversations').then(response => response.data)
+  });
+
   const activeConversation = conversations.find(
-      (c) => c.id.toString() === activeConversationId?.toString()
+      (c) => c.id.toString() ===   activeConversationId?.toString()
   );
 
   if (!activeConversation || !currentUser) {
@@ -18,7 +24,7 @@ const ChatHeader: React.FC = () => {
   }
 
   const contact = activeConversation.participants.find(
-      (p: User) => p.id !== currentUser.id
+      (p: User) => p.id !==   currentUser.id
   );
   if (!contact) {
     return null;

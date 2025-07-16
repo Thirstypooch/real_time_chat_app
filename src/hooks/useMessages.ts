@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import apiClient from '../services/api';
-import { Message } from '../types';
+import {Message} from '../types';
 
 interface SendMessageData {
   content: string;
@@ -26,11 +26,12 @@ export const useSendMessage = (conversationId: number | null) => {
             ? apiClient.post(`/conversations/${conversationId}/messages`, data).then(response => response.data)
             : Promise.reject(new Error('No active conversation')),
 
-    onSuccess: async () => {
+    onSuccess: () => {
       if (conversationId) {
-        await queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
-        await queryClient.invalidateQueries({ queryKey: ['conversations'] });
+        void queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+        void queryClient.invalidateQueries({ queryKey: ['conversations'] });
       }
     },
+
   });
 };

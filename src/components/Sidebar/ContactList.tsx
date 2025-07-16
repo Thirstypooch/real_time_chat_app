@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import { Search } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import apiClient from '../../services/api';
@@ -6,27 +6,25 @@ import { useChatStore } from '../../stores/chatStore';
 import ContactItem from './ContactItem';
 import { Conversation } from '../../types';
 
+
 const ContactList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-    const setConversations = useChatStore(state => state.setConversations);
+  const currentUser = useChatStore(state => state.currentUser);
 
-  const { data: conversations = [] } = useQuery<Conversation[]>({
+  const { data: conversations = [], isLoading } = useQuery<Conversation[]>({
     queryKey: ['conversations'],
     queryFn: () => apiClient.get('/conversations').then(response => response.data),
   });
 
-    useEffect(() => {
-        if (conversations) {
-            setConversations(conversations);
-        }
-    }, [conversations, setConversations]);
-
-  const filteredConversations = searchTerm.trim() === ''
+  const filteredConversations = searchTerm.trim() ===   ''
     ? conversations
     : conversations.filter(conv => {
-        const contact = conv.participants.find(p => p.id !== useChatStore.getState().currentUser?.id);
+        const contact = conv.participants.find(p => p.id !==   currentUser?.id);
         return contact?.name.toLowerCase().includes(searchTerm.toLowerCase());
       });
+    if (isLoading) {
+        return <div className="p-4 text-center text-gray-500">Loading contacts.....</div>;
+    }
 
   return (
     <div className="h-full flex flex-col">

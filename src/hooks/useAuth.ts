@@ -1,9 +1,9 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../services/api';
 import { useChatStore } from '../stores/chatStore';
 import { User } from '../types';
-import { useEffect } from 'react';
+
 
 interface LoginCredentials {
   email: string;
@@ -31,20 +31,36 @@ export const useLogin = () => {
 };
 
 export const useUser = () => {
+  const token = localStorage.getItem('api_token');
   return useQuery<User>({
     queryKey: ['user'],
     queryFn: () => apiClient.get('/user').then((response) => response.data),
     retry: false,
+    enabled: !!token,
   });
 };
 
-export const useSyncUser = () => {
-  const { data: user } = useUser();
-  const setUser = useChatStore((state) => state.setUser);
+export const useLogout = () => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const setUser = useChatStore(state => state.setUser);
+  const setActiveConversationId = useChatStore(state => state.setActiveConversationId);
 
-  useEffect(() => {
-    if (user) {
-      setUser(user);
+  return useMutation({
+    mutationFn: () => apiClient.post('/logout'),
+    onSuccess: () => {
+      localStorage.removeItem('api_token');
+      setUser(null);
+      setActiveConversationId(null);
+      queryClient.clear(); // Clear all cached data
+      navigate('/login');
+    },
+    onError: () => { // Still log out on frontend even if API fails
+      localStorage.removeItem('api_token');
+      setUser(null);
+      setActiveConversationId(null);
+      queryClient.clear();
+      navigate('/login');
     }
-  }, [user, setUser]);
+  });
 }

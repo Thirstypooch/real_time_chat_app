@@ -13,16 +13,19 @@ export const useEcho = (conversationId: number | null) => {
       previousChannel = channelName;
       echo.private(channelName)
           .listen('.App\\Events\\MessageSent', (e: { message: Message }) => {
-            queryClient.setQueryData(
-                ['messages', conversationId],
-                (currentMessages: Message[] = []) => {
-                  const messageExists = currentMessages.some(msg => msg.id ===  e.message.id);
-                  if (messageExists) {
-                    return currentMessages;
+              queryClient.setQueryData(
+                  ['messages', conversationId],
+                  (oldData: Message[] | undefined) => {
+                      if (!oldData) {
+                          return [e.message];
+                      }
+                      const messageExists = oldData.some(msg => msg.id ===   e.message.id);
+                      if (messageExists) {
+                          return oldData;
+                      }
+                      return [...oldData, e.message];
                   }
-                  return [...currentMessages, e.message];
-                }
-            );
+              );
             void queryClient.invalidateQueries({ queryKey: ['conversations'] });
           });
     }

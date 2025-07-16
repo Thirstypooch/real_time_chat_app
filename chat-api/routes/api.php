@@ -11,7 +11,9 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Broadcast::routes();
+    Route::post('/broadcasting/auth', function (Request $request) {
+        return Broadcast::auth($request);
+    });
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store']);
     Route::get('/user', [AuthController::class, 'user']);

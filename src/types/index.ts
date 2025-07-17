@@ -23,4 +23,11 @@ export interface Conversation {
   unreadCount: number;
 }
 
+export interface AIChunkEvent {
+  conversationId: number;
+  chunk: string;
+  isFirstChunk: boolean;
+  sender: User;
+}
+
 export type Theme = 'light' | 'dark';

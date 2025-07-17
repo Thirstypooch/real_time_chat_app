@@ -13,11 +13,15 @@ class ConversationController extends Controller
         $user = $request->user();
 
         $conversations = $user-> conversations()
-            ->with(['participants' => function ($query) use ($user) {
+            -> with(['participants' => function ($query) use ($user) {
                 $query->where('users.id', '!=', $user->id);
             }])
-            ->with('latestMessage.sender')
-            ->get();
+            -> with('latestMessage.sender')
+            -> get();
+
+        $conversations-> each(function ($conversation) {
+            $conversation-> unreadCount = $conversation-> pivot-> unread_count;
+        });
 
         return response()->json($conversations);
     }
@@ -27,5 +31,14 @@ class ConversationController extends Controller
         $messages = $conversation->messages()->with('sender')->get();
 
         return response()->json($messages);
+    }
+
+    public function markAsRead(Request $request, Conversation $conversation): \Illuminate\Http\JsonResponse
+    {
+        $conversation-> participants()-> updateExistingPivot($request-> user()-> id, [
+            'unread_count' => 0,
+        ]);
+
+        return response()-> json(['message' => 'Conversation marked as read.']);
     }
 }

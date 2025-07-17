@@ -1,6 +1,7 @@
 import React from 'react';
 import { Conversation } from '../../types';
 import { useChatStore } from '../../stores/chatStore';
+import { useMarkAsRead } from '../../hooks/useMessages';
 
 interface ContactItemProps {
   conversation: Conversation;
@@ -10,16 +11,18 @@ const ContactItem: React.FC<ContactItemProps> = ({ conversation }) => {
   const currentUser = useChatStore(state => state.currentUser);
   const activeConversationId = useChatStore(state => state.activeConversationId);
   const setActiveConversationId = useChatStore(state => state.setActiveConversationId);
-
+  const { mutate: markAsRead } = useMarkAsRead();
   const contact = conversation.participants.find(p => p.id !== currentUser?.id);
 
   if (!contact || !currentUser) return null;
 
-  const isActive = activeConversationId?.toString() === conversation.id;
-  const hasUnread = conversation.unreadCount > 0;
+  const isActive = activeConversationId ===   conversation.id;
 
   const handleClick = () => {
     setActiveConversationId(Number(conversation.id));
+    if (conversation.unreadCount > 0) {
+      markAsRead(Number(conversation.id));
+    }
   };
 
   return (
@@ -71,11 +74,12 @@ const ContactItem: React.FC<ContactItemProps> = ({ conversation }) => {
             </p>
           )}
 
-          {hasUnread && (
-            <div className="bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-              {conversation.unreadCount}
-            </div>
+          {conversation.unreadCount > 0 && (
+              <div className="bg-blue-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                {conversation.unreadCount}
+              </div>
           )}
+
         </div>
       </div>
     </div>

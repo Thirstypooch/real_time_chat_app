@@ -35,3 +35,14 @@ export const useSendMessage = (conversationId: number | null) => {
 
   });
 };
+
+export const useMarkAsRead = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (conversationId: number) =>
+        apiClient.post(`/conversations/${ conversationId}/read`),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['conversations'] });
+    },
+  });
+};

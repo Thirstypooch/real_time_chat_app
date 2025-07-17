@@ -16,6 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store']);
+    Route::post('/conversations/{conversation}/read', [ConversationController::class, 'markAsRead']);
     Route::get('/user', [AuthController::class, 'user']);
     Route::get('/conversations', [ConversationController::class, 'index']);
     Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'messages']);

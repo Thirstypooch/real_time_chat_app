@@ -5,8 +5,10 @@ import MessageBubble from './MessageBubble';
 import { Message } from '../../types';
 import { Loader2 } from 'lucide-react';
 
+
 const MessageList: React.FC = () => {
   const activeConversationId = useChatStore(state => state.activeConversationId);
+  const streamingMessage = useChatStore(state => state.streamingMessage);
   const { data: messages = [], isLoading, isError } = useMessages(activeConversationId);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -44,9 +46,22 @@ const MessageList: React.FC = () => {
             <MessageBubble
                 key={message.id}
                 message={message}
-                isLast={index === messages.length - 1}
+                isLast={index ===   messages.length - 1 && !streamingMessage}
             />
         ))}
+          {streamingMessage && streamingMessage.conversationId ===   activeConversationId && (
+              <MessageBubble
+                  message={{
+                      id: -1,
+                      content: streamingMessage.content,
+                      sender: streamingMessage.sender,
+                      created_at: new Date().toISOString(),
+                      senderId: streamingMessage.sender.id,
+                      read: false,
+                  }}
+                  isLast={true}
+              />
+          )}
         <div ref={messagesEndRef} />
       </div>
   );

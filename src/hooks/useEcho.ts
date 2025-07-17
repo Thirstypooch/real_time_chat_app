@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import echo from '../services/echo';
-import { Message } from '../types';
+import { Message, AIChunkEvent } from '../types';
+import { useChatStore } from '../stores/chatStore';
 
 export const useEcho = (conversationId: number | null) => {
   const queryClient = useQueryClient();
+  const { setStreamingMessage, appendStreamingMessage, streamingMessage } = useChatStore();
 
   useEffect(() => {
     let previousChannel: string | null = null;
@@ -12,7 +14,22 @@ export const useEcho = (conversationId: number | null) => {
       const channelName = `conversation.${conversationId}`;
       previousChannel = channelName;
       echo.private(channelName)
+          .listen('.App\\Events\\AIResponseChunkSent', (e: AIChunkEvent) => {
+              if (e.isFirstChunk) {
+                  setStreamingMessage({
+                      content: e.chunk,
+                      sender: e.sender,
+                      conversationId: e.conversationId,
+                  });
+              } else {
+                  appendStreamingMessage(e.chunk);
+              }
+          })
+
           .listen('.App\\Events\\MessageSent', (e: { message: Message }) => {
+              if (streamingMessage && e.message.sender.id === streamingMessage.sender.id) {
+                  setStreamingMessage(null);
+              }
               queryClient.setQueryData(
                   ['messages', conversationId],
                   (oldData: Message[] | undefined) => {
@@ -34,5 +51,5 @@ export const useEcho = (conversationId: number | null) => {
         echo.leave(previousChannel);
       }
     };
-  }, [conversationId, queryClient]);
+  }, [conversationId, queryClient, setStreamingMessage, appendStreamingMessage, streamingMessage]);
 };

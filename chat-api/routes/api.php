@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Broadcast;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/auth/google/redirect', [AuthController::class, 'googleRedirect']);
+Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/broadcasting/auth', function (Request $request) {
         return Broadcast::auth($request);
@@ -20,4 +23,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::get('/conversations', [ConversationController::class, 'index']);
     Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'messages']);
+
 });

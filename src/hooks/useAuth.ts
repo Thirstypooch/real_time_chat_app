@@ -25,7 +25,7 @@ export const useLogin = () => {
     onSuccess: (data) => {
       localStorage.setItem('api_token', data.token);
       setUser(data.user);
-      navigate('/');
+      navigate('/app');
     },
   });
 };

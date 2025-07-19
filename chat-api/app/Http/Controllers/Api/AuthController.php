@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Services\ConversationService;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
@@ -121,27 +122,23 @@ class AuthController extends Controller
         }
     }*/
 
-    public function googleCallback(): RedirectResponse
+    public function googleCallback(ConversationService $conversationService): RedirectResponse
     {
         try {
             $googleUser = Socialite::driver('google')->stateless()->user();
 
-            // Find an existing user by their google_id first.
             $user = User::where('google_id', $googleUser->id)->first();
 
             if (!$user) {
-                // If no user is found by google_id, check if an account with that email already exists.
                 $user = User::where('email', $googleUser->email)->first();
 
                 if ($user) {
-                    // If found by email, link the google_id to their existing account.
                     $user->update(['google_id' => $googleUser->id]);
+                    $conversationService->syncUserConversations($user);
                 } else {
-                    // If no user exists at all, check the user limit before creating a new one.
                     if (User::where('is_ai', false)->count() >= self::MAX_USERS) {
                         return redirect(config('app.frontend_url', 'http://localhost:5173') . '/login?error=user_limit_reached');
                     }
-                    // Create a new user.
                     $user = User::create([
                         'name' => $googleUser->name,
                         'email' => $googleUser->email,

@@ -3,19 +3,26 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
+    private const MAX_USERS = 100;
     public function register(Request $request): JsonResponse
     {
+        if (User:: where('is_ai', false)-> count() >= self::MAX_USERS) {
+            return response()-> json(['message' => 'Registration is currently closed due to user limits.'], 429);
+        }
+
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')],
@@ -27,9 +34,9 @@ class AuthController extends Controller
         }
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name' => $request-> name,
+            'email' => $request-> email,
+            'password' => Hash::make($request-> password),
         ]);
 
         $token = $user->createToken('auth-token')->plainTextToken;
@@ -68,7 +75,6 @@ class AuthController extends Controller
     public function logout(Request $request): JsonResponse
     {
         $request-> user()-> currentAccessToken()-> delete();
-
         return response()-> json(['message' => 'Successfully logged out']);
     }
 
@@ -79,13 +85,13 @@ class AuthController extends Controller
 
     public function googleRedirect(): RedirectResponse
     {
-        return Socialite::driver('google')->stateless()->redirect();
+        return Socialite::driver('google')-> stateless()->redirect();
     }
 
     /**
      * Obtain the user information from Google.
      */
-    public function googleCallback(): RedirectResponse
+/*    public function googleCallback(): RedirectResponse
     {
         try {
             $googleUser = Socialite::driver('google')->stateless()->user();
@@ -113,5 +119,48 @@ class AuthController extends Controller
             // If something goes wrong, redirect to the login page with an error
             return redirect(config('app.frontend_url', 'http://localhost:5173') . '/login?error=google_auth_failed');
         }
+    }*/
+
+    public function googleCallback(): RedirectResponse
+    {
+        try {
+            $googleUser = Socialite::driver('google')->stateless()->user();
+
+            // Find an existing user by their google_id first.
+            $user = User::where('google_id', $googleUser->id)->first();
+
+            if (!$user) {
+                // If no user is found by google_id, check if an account with that email already exists.
+                $user = User::where('email', $googleUser->email)->first();
+
+                if ($user) {
+                    // If found by email, link the google_id to their existing account.
+                    $user->update(['google_id' => $googleUser->id]);
+                } else {
+                    // If no user exists at all, check the user limit before creating a new one.
+                    if (User::where('is_ai', false)->count() >= self::MAX_USERS) {
+                        return redirect(config('app.frontend_url', 'http://localhost:5173') . '/login?error=user_limit_reached');
+                    }
+                    // Create a new user.
+                    $user = User::create([
+                        'name' => $googleUser->name,
+                        'email' => $googleUser->email,
+                        'google_id' => $googleUser->id,
+                        'avatar' => $googleUser->avatar,
+                        'password' => null,
+                    ]);
+                }
+            }
+
+            $token = $user->createToken('auth-token')->plainTextToken;
+            $userJson = urlencode(json_encode($user));
+
+            return redirect(config('app.frontend_url', 'http://localhost:5173') . "/auth/callback?token=$token&user=$userJson");
+
+        } catch (Exception $e) {
+            Log::error('Google Auth Callback Error: ' . $e->getMessage());
+            return redirect(config('app.frontend_url', 'http://localhost:5173') . '/login?error=google_auth_failed');
+        }
     }
+
 }

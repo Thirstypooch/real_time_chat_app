@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import apiClient from '../services/api';
 import {Message} from '../types';
+import { AxiosError } from 'axios';
 
 interface SendMessageData {
   content: string;
@@ -20,7 +21,7 @@ export const useMessages = (conversationId: number | null) => {
 export const useSendMessage = (conversationId: number | null) => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<Message, Error, SendMessageData>({
     mutationFn: (data: SendMessageData) =>
         conversationId
             ? apiClient.post(`/conversations/${conversationId}/messages`, data).then(response => response.data)
@@ -32,7 +33,11 @@ export const useSendMessage = (conversationId: number | null) => {
         void queryClient.invalidateQueries({ queryKey: ['conversations'] });
       }
     },
-
+    onError: (error) => {
+      if (error instanceof AxiosError && error.response?.status === 429) {
+        error.message = "You've reached your daily message limit. Please try again tomorrow.";
+      }
+    }
   });
 };
 

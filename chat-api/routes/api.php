@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Broadcast;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-
 Route::get('/auth/google/redirect', [AuthController::class, 'googleRedirect']);
 Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
 
@@ -18,7 +17,8 @@ Route::middleware('auth:sanctum')->group(function () {
         return Broadcast::auth($request);
     });
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store']);
+    Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store'])
+    ->middleware('throttle:daily');
     Route::post('/conversations/{conversation}/read', [ConversationController::class, 'markAsRead']);
     Route::get('/user', [AuthController::class, 'user']);
     Route::get('/conversations', [ConversationController::class, 'index']);

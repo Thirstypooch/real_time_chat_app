@@ -3,6 +3,8 @@ primary_region = 'gru'
 
 [build]
 dockerfile = 'Dockerfile'
+[build.args]
+VITE_REVERB_APP_KEY = "${ VITE_REVERB_APP_KEY}"
 
 # This `[[services]]` block is the explicit replacement for `[http_service]`
 # It gives us the control needed to fix the redirect loop.

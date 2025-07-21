@@ -4,6 +4,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+ARG VITE_REVERB_APP_KEY
+ENV VITE_REVERB_APP_KEY=$VITE_REVERB_APP_KEY
 RUN npm run build
 
 # Production Stage

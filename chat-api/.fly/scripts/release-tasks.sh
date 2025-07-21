@@ -1,30 +1,37 @@
 #!/usr/bin/env bash
+set -e
 
-# This script runs before the app is started, as a release command.
-# It is a good place to run database migrations.
+if [ -z "$DATABASE_URL" ]; then
+    echo "ERROR: DATABASE_URL environment variable is not set."
+    exit 1
+fi
 
-set -e # Abort with an error if any command fails
+# Parse DATABASE_URL
+DB_USER=$(echo "$DATABASE_URL" | awk -F'://' '{print $2}' | awk -F':' '{print $1}')
+DB_PASSWORD=$(echo "$DATABASE_URL" | awk -F':' '{print $3}' | awk -F'@' '{print $1}')
+DB_HOST=$(echo "$DATABASE_URL" | awk -F'@' '{print $2}' | awk -F':' '{print $1}')
+DB_PORT=$(echo "$DATABASE_URL" | awk -F':' '{print $4}' | awk -F'/' '{print $1}')
+DB_NAME=$(echo "$DATABASE_URL" | awk -F'/' '{print $NF}')
 
-# Wait for the database to be ready
-# We will use a simple loop to try and connect.
-# The `pg_isready` command is a lightweight way to check if the PostgreSQL server is accepting connections.
-# We need to parse the DATABASE_URL to get the connection details.
-DB_HOST=$(echo $DATABASE_URL | awk -F'[@:/]' '{print $5}')
-DB_PORT=$(echo $DATABASE_URL | awk -F'[:/]' '{print $6}')
-DB_USER=$(echo $DATABASE_URL | awk -F'[:@]' '{print $2}' | awk -F':' '{print $1}')
-DB_NAME=$(echo $DATABASE_URL | awk -F'/' '{print $NF}')
+echo "--> Running release tasks..."
 
-echo "Waiting for database to be ready..."
+# Wait for database
+echo "Connecting to database '$DB_NAME' on host '$DB_HOST'..."
 counter=0
-while ! PGPASSWORD=$(echo $DATABASE_URL | awk -F'[:@]' '{print $2}' | awk -F':' '{print $2}') pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -q; do
+while ! PGPASSWORD="$DB_PASSWORD" pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -q; do
     sleep 2
     counter=$((counter+1))
     if [ $counter -ge 30 ]; then
-        echo "Database did not become ready in time. Aborting."
+        echo "Error: Database did not become ready in 60 seconds."
         exit 1
     fi
+    echo "Database not ready, waiting..."
 done
-echo "Database is ready."
+echo "Database is ready!"
 
-# Run the migrations
+# Run migrations
+echo "Running database migrations..."
 /usr/bin/php /var/www/html/artisan migrate --force
+echo "Migrations complete."
+
+echo "--> Release tasks finished."

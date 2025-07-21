@@ -4,23 +4,36 @@ FROM php:8.3-fpm
 # Set working directory
 WORKDIR /var/www/html
 
-# Install system dependencies needed for Laravel
+# Install system dependencies needed for Laravel, Nginx, and Supervisor
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     zip \
     libzip-dev \
     libpq-dev \
+    nginx \
+    supervisor \
     && docker-php-ext-install pdo pdo_pgsql zip sockets pcntl
 
 # Install Composer (PHP package manager)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy existing application directory contents
+# Copy the application code
 COPY . .
 
-# Install composer dependencies
-RUN composer install --no-interaction --no-plugins --no-scripts --prefer-dist --optimize-autoloader
+# Copy your existing fly.io configurations into the image
+COPY .fly/nginx /etc/nginx
+COPY .fly/php /usr/local/etc/php
+COPY .fly/supervisor /etc/supervisor
 
-# Expose port 8000 for the PHP server
-EXPOSE 8000
+# Install composer dependencies for production
+RUN composer install --no-interaction --no-dev --no-plugins --no-scripts --prefer-dist --optimize-autoloader
+
+# Set correct permissions for storage and bootstrap cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Expose port 8080 for Nginx
+EXPOSE 8080
+
+# Set the container's entrypoint to your existing script
+ENTRYPOINT ["/var/www/html/.fly/entrypoint.sh"]

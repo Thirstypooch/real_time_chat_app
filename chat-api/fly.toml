@@ -14,14 +14,16 @@ dockerfile = 'Dockerfile'
 release_command = 'php artisan migrate:fresh --seed --force'
 
 [processes]
-web = 'php artisan serve --host=0.0.0.0 --port=8080'
+# The "app" process will run the container's default ENTRYPOINT (supervisord)
+app = ""
 reverb = 'php artisan reverb:start --host=0.0.0.0 --port=8080'
 worker = 'php artisan queue:work --tries=3'
 
+# HTTP Service for the main API (now points to the 'app' process)
 [[services]]
 protocol = 'tcp'
 internal_port = 8080
-processes = ['web']
+processes = ['app'] # Changed from ['web']
 
 [[services.ports]]
 port = 80
@@ -31,6 +33,7 @@ handlers = ['http']
 port = 443
 handlers = ['tls', 'http']
 
+# WebSocket Service for Reverb (no changes needed here)
 [[services]]
 protocol = 'tcp'
 internal_port = 8080

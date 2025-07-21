@@ -11,7 +11,7 @@ cpus = 1
 dockerfile = 'Dockerfile'
 
 [deploy]
-release_command = 'php artisan migrate --force'
+release_command = '/var/www/html/.fly/scripts/release-tasks.sh'
 
 [processes]
 # The "app" process will run the container's default ENTRYPOINT (supervisord)

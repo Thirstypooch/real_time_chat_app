@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     libzip-dev \
     libpq-dev \
-    && docker-php-ext-install pdo pdo_pgsql zip sockets
+    && docker-php-ext-install pdo pdo_pgsql zip sockets pcntl
 
 # Install Composer (PHP package manager)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

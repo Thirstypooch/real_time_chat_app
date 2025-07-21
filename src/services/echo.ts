@@ -6,11 +6,11 @@ interface ChannelAuthorizationData {
     auth: string;
 }
 
-const pusherClient = new Pusher(import.meta.env.VITE_REVERB_APP_KEY, {
-    wsHost: import.meta.env.VITE_REVERB_HOST,
-    wsPort: Number(import.meta.env.VITE_REVERB_PORT || 8080),
-    wssPort: Number(import.meta.env.VITE_REVERB_PORT || 8080),
-    forceTLS: import.meta.env.VITE_REVERB_SCHEME === 'https',
+const pusherClient = new Pusher(window.runtimeConfig.VITE_REVERB_APP_KEY, {
+    wsHost: window.runtimeConfig.VITE_REVERB_HOST,
+    wsPort: Number(window.runtimeConfig.VITE_REVERB_PORT || 8080),
+    wssPort: Number(window.runtimeConfig.VITE_REVERB_PORT || 8080),
+    forceTLS: window.runtimeConfig.VITE_REVERB_SCHEME === 'https',
     enabledTransports: ['ws', 'wss'],
     cluster: 'mt1',
 

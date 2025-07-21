@@ -4,21 +4,14 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-ARG VITE_API_URL
-ARG VITE_REVERB_APP_KEY
-ARG VITE_REVERB_HOST
-ARG VITE_REVERB_PORT
-ARG VITE_REVERB_SCHEME
-ENV VITE_API_URL=$VITE_API_URL
-ENV VITE_REVERB_APP_KEY=$VITE_REVERB_APP_KEY
-ENV VITE_REVERB_HOST=$VITE_REVERB_HOST
-ENV VITE_REVERB_PORT=$VITE_REVERB_PORT
-ENV VITE_REVERB_SCHEME=$VITE_REVERB_SCHEME
 RUN npm run build
 
 # Production Stage
 FROM caddy:2-alpine
 WORKDIR /usr/share/caddy
 COPY --from=build /app/dist/ ./
-# Use a Caddyfile for SPA routing
 COPY Caddyfile /etc/caddy/Caddyfile
+
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]

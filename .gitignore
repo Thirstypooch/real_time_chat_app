@@ -28,5 +28,7 @@ repomix-output.xml
 .bolt
 repomix-output-frontend.xml
 chat-api/repomix-output-backend.xml
-chat-api/.fly
 .github/
+chat-api/.fly/
+.fly/
+!fly.toml

@@ -15,7 +15,7 @@ release_command = 'php artisan migrate:fresh --seed --force'
 
 [processes]
 web = 'php artisan serve --host=0.0.0.0 --port=8080'
-reverb = 'php artisan reverb:start'
+reverb = 'php artisan reverb:start --host=0.0.0.0 --port=8080'
 worker = 'php artisan queue:work --tries=3'
 
 [[services]]
@@ -26,6 +26,15 @@ processes = ['web']
 [[services.ports]]
 port = 80
 handlers = ['http']
+
+[[services.ports]]
+port = 443
+handlers = ['tls', 'http']
+
+[[services]]
+protocol = 'tcp'
+internal_port = 8080
+processes = ['reverb']
 
 [[services.ports]]
 port = 443

@@ -29,3 +29,4 @@ repomix-output.xml
 repomix-output-frontend.xml
 chat-api/repomix-output-backend.xml
 chat-api/.fly
+.github/

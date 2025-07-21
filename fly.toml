@@ -4,7 +4,11 @@ primary_region = 'gru'
 [build]
 dockerfile = 'Dockerfile'
 [build.args]
+VITE_API_URL = "${ VITE_API_URL}"
 VITE_REVERB_APP_KEY = "${ VITE_REVERB_APP_KEY}"
+VITE_REVERB_HOST = "${ VITE_REVERB_HOST}"
+VITE_REVERB_PORT = "${ VITE_REVERB_PORT}"
+VITE_REVERB_SCHEME = "${ VITE_REVERB_SCHEME}"
 
 # This `[[services]]` block is the explicit replacement for `[http_service]`
 # It gives us the control needed to fix the redirect loop.

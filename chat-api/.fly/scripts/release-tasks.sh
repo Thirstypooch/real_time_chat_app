@@ -11,7 +11,8 @@ DB_USER=$(echo "$DATABASE_URL" | awk -F'://' '{print $2}' | awk -F':' '{print $1
 DB_PASSWORD=$(echo "$DATABASE_URL" | awk -F':' '{print $3}' | awk -F'@' '{print $1}')
 DB_HOST=$(echo "$DATABASE_URL" | awk -F'@' '{print $2}' | awk -F':' '{print $1}')
 DB_PORT=$(echo "$DATABASE_URL" | awk -F':' '{print $4}' | awk -F'/' '{print $1}')
-DB_NAME=$(echo "$DATABASE_URL" | awk -F'/' '{print $NF}')
+DB_NAME=$(echo "$DATABASE_URL" | awk -F'/' '{print $NF}' | awk -F'?' '{print $1}')
+
 
 echo "--> Running release tasks..."
 
@@ -31,7 +32,7 @@ echo "Database is ready!"
 
 # Run migrations
 echo "Running database migrations..."
-/usr/bin/php /var/www/html/artisan migrate --force
+/usr/local/bin/php /var/www/html/artisan migrate --force # Also updated PHP path here for consistency
 echo "Migrations complete."
 
 echo "--> Release tasks finished."

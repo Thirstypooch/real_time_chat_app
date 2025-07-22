@@ -43,7 +43,7 @@ port = 443
 handlers = ['tls']
 
 [processes]
-app = ""
+app = "supervisord -c /etc/supervisor/supervisord.conf"
 reverb = "php artisan reverb:start --host=0.0.0.0 --port=8081"
 worker = "php artisan queue:work"
 

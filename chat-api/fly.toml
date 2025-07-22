@@ -1,11 +1,14 @@
 app = 'chat-api-falling-dream-7373'
 primary_region = 'gru'
-console_command = 'php /var/www/html/artisan tinker'
 
-[[vm]]
-memory = '1gb'
-cpu_kind = 'shared'
-cpus = 1
+[env]
+APP_ENV = "production"
+LOG_CHANNEL = "stderr"
+APP_URL = "https://chat-api-falling-dream-7373.fly.dev"
+DB_CONNECTION = "pgsql"
+DB_HOST = "chat-api-falling-dream-7373-db.flycast"
+DB_PORT = "5432"
+DB_DATABASE = "chat_api_falling_dream_7373"
 
 [build]
 dockerfile = 'Dockerfile'
@@ -14,26 +17,25 @@ dockerfile = 'Dockerfile'
 release_command = '/var/www/html/.fly/scripts/release-tasks.sh'
 
 [processes]
-# The "app" process will run the container's default ENTRYPOINT (supervisord)
 app = ""
 reverb = 'php artisan reverb:start --host=0.0.0.0 --port=8080'
 worker = 'php artisan queue:work --tries=3'
 
-# HTTP Service for the main API (now points to the 'app' process)
 [[services]]
 protocol = 'tcp'
 internal_port = 8080
-processes = ['app'] # Changed from ['web']
+processes = ['app']
 
 [[services.ports]]
 port = 80
 handlers = ['http']
+force_https = true
 
 [[services.ports]]
 port = 443
 handlers = ['tls', 'http']
 
-# WebSocket Service for Reverb (no changes needed here)
+# This separate service is for Reverb WebSockets
 [[services]]
 protocol = 'tcp'
 internal_port = 8080
@@ -41,4 +43,10 @@ processes = ['reverb']
 
 [[services.ports]]
 port = 443
-handlers = ['tls', 'http']
+# Use the 'tls' handler for WebSockets, not 'http'
+handlers = ['tls']
+
+[[vm]]
+memory = '1gb'
+cpu_kind = 'shared'
+cpus = 1

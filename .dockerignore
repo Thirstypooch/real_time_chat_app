@@ -1,0 +1,204 @@
+# flyctl launch added from .gitignore
+# Logs
+**/logs
+**/*.log
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+**/lerna-debug.log*
+
+**/node_modules
+**/dist
+**/dist-ssr
+**/*.local
+
+# Editor directories and files
+**/.vscode/*
+!**/.vscode/extensions.json
+**/.idea
+**/.DS_Store
+**/*.suo
+**/*.ntvs*
+**/*.njsproj
+**/*.sln
+**/*.sw?
+**/repomix-output.xml
+**/.junie/*
+**/.env
+**/.bolt
+**/repomix-output-frontend.xml
+**/chat-api/repomix-output-backend.xml
+**/.github
+
+# flyctl launch added from .idea/.gitignore
+# Default ignored files
+.idea/shelf
+.idea/workspace.xml
+# Editor-based HTTP Client requests
+.idea/httpRequests
+# Datasource local storage ignored files
+.idea/dataSources
+.idea/dataSources.local.xml
+
+# flyctl launch added from chat-api/.gitignore
+chat-api/**/*.log
+chat-api/**/.DS_Store
+chat-api/**/.env
+chat-api/**/.env.backup
+chat-api/**/.env.production
+chat-api/**/.phpactor.json
+chat-api/**/.phpunit.result.cache
+chat-api/.fleet
+chat-api/.idea
+chat-api/.nova
+chat-api/.phpunit.cache
+chat-api/.vscode
+chat-api/.zed
+chat-api/auth.json
+chat-api/node_modules
+chat-api/public/build
+chat-api/public/hot
+chat-api/public/storage
+chat-api/storage/*.key
+chat-api/storage/pail
+chat-api/vendor
+chat-api/**/Homestead.json
+chat-api/**/Homestead.yaml
+chat-api/**/Thumbs.db
+chat-api/**/repomix-output-dotfly.xml
+
+
+
+# flyctl launch added from chat-api/.idea/.gitignore
+# Default ignored files
+chat-api/.idea/shelf
+chat-api/.idea/workspace.xml
+# Editor-based HTTP Client requests
+chat-api/.idea/httpRequests
+# Datasource local storage ignored files
+chat-api/.idea/dataSources
+chat-api/.idea/dataSources.local.xml
+
+# flyctl launch added from chat-api/bootstrap/cache/.gitignore
+chat-api/bootstrap/cache/**/*
+!chat-api/bootstrap/cache/**/.gitignore
+
+# flyctl launch added from chat-api/database/.gitignore
+chat-api/database/**/*.sqlite*
+
+# flyctl launch added from chat-api/storage/app/.gitignore
+chat-api/storage/app/**/*
+!chat-api/storage/app/**/private
+!chat-api/storage/app/**/public
+!chat-api/storage/app/**/.gitignore
+
+# flyctl launch added from chat-api/storage/app/private/.gitignore
+chat-api/storage/app/private/**/*
+!chat-api/storage/app/private/**/.gitignore
+
+# flyctl launch added from chat-api/storage/app/public/.gitignore
+chat-api/storage/app/public/**/*
+!chat-api/storage/app/public/**/.gitignore
+
+# flyctl launch added from chat-api/storage/framework/.gitignore
+chat-api/storage/framework/**/compiled.php
+chat-api/storage/framework/**/config.php
+chat-api/storage/framework/**/down
+chat-api/storage/framework/**/events.scanned.php
+chat-api/storage/framework/**/maintenance.php
+chat-api/storage/framework/**/routes.php
+chat-api/storage/framework/**/routes.scanned.php
+chat-api/storage/framework/**/schedule-*
+chat-api/storage/framework/**/services.json
+
+# flyctl launch added from chat-api/storage/framework/cache/.gitignore
+chat-api/storage/framework/cache/**/*
+!chat-api/storage/framework/cache/**/data
+!chat-api/storage/framework/cache/**/.gitignore
+
+# flyctl launch added from chat-api/storage/framework/cache/data/.gitignore
+chat-api/storage/framework/cache/data/**/*
+!chat-api/storage/framework/cache/data/**/.gitignore
+
+# flyctl launch added from chat-api/storage/framework/sessions/.gitignore
+chat-api/storage/framework/sessions/**/*
+!chat-api/storage/framework/sessions/**/.gitignore
+
+# flyctl launch added from chat-api/storage/framework/testing/.gitignore
+chat-api/storage/framework/testing/**/*
+!chat-api/storage/framework/testing/**/.gitignore
+
+# flyctl launch added from chat-api/storage/framework/views/.gitignore
+chat-api/storage/framework/views/**/*
+!chat-api/storage/framework/views/**/.gitignore
+
+# flyctl launch added from chat-api/storage/logs/.gitignore
+chat-api/storage/logs/**/*
+!chat-api/storage/logs/**/.gitignore
+
+# flyctl launch added from chat-api/storage/pail/.gitignore
+chat-api/storage/pail/**/*
+!chat-api/storage/pail/**/.gitignore
+
+# flyctl launch added from chat-api/vendor/fly-apps/dockerfile-laravel/.gitignore
+chat-api/vendor/fly-apps/dockerfile-laravel/vendor
+chat-api/vendor/fly-apps/dockerfile-laravel/.idea
+chat-api/vendor/fly-apps/dockerfile-laravel/.vscode
+chat-api/vendor/fly-apps/dockerfile-laravel/.vagrant
+chat-api/vendor/fly-apps/dockerfile-laravel/**/.phpunit.result.cache
+chat-api/vendor/fly-apps/dockerfile-laravel/**/.env
+
+# flyctl launch added from chat-api/vendor/fly-apps/dockerfile-laravel/storage/app/.gitignore
+chat-api/vendor/fly-apps/dockerfile-laravel/storage/app/**/*
+!chat-api/vendor/fly-apps/dockerfile-laravel/storage/app/**/.gitignore
+
+# flyctl launch added from chat-api/vendor/fly-apps/dockerfile-laravel/storage/framework/cache/.gitignore
+chat-api/vendor/fly-apps/dockerfile-laravel/storage/framework/cache/**/*
+!chat-api/vendor/fly-apps/dockerfile-laravel/storage/framework/cache/**/.gitignore
+
+# flyctl launch added from chat-api/vendor/fly-apps/dockerfile-laravel/storage/framework/views/.gitignore
+chat-api/vendor/fly-apps/dockerfile-laravel/storage/framework/views/**/*
+!chat-api/vendor/fly-apps/dockerfile-laravel/storage/framework/views/**/.gitignore
+
+# flyctl launch added from chat-api/vendor/google-gemini-php/client/.gitignore
+chat-api/vendor/google-gemini-php/client/.phpunit.cache
+chat-api/vendor/google-gemini-php/client/.php-cs-fixer.cache
+chat-api/vendor/google-gemini-php/client/.php-cs-fixer.php
+chat-api/vendor/google-gemini-php/client/.phpactor.json
+chat-api/vendor/google-gemini-php/client/composer.lock
+chat-api/vendor/google-gemini-php/client/vendor
+chat-api/vendor/google-gemini-php/client/**/.idea
+
+# flyctl launch added from chat-api/vendor/google-gemini-php/laravel/.gitignore
+chat-api/vendor/google-gemini-php/laravel/.phpunit.cache
+chat-api/vendor/google-gemini-php/laravel/.php-cs-fixer.cache
+chat-api/vendor/google-gemini-php/laravel/.php-cs-fixer.php
+chat-api/vendor/google-gemini-php/laravel/composer.lock
+chat-api/vendor/google-gemini-php/laravel/vendor
+chat-api/vendor/google-gemini-php/laravel/**/.idea
+
+# flyctl launch added from chat-api/vendor/hamcrest/hamcrest-php/.gitignore
+chat-api/vendor/hamcrest/hamcrest-php/**/composer.lock
+chat-api/vendor/hamcrest/hamcrest-php/**/tests/.phpunit.result.cache
+chat-api/vendor/hamcrest/hamcrest-php/**/vendor
+
+# flyctl launch added from chat-api/vendor/mockery/mockery/docs/.gitignore
+chat-api/vendor/mockery/mockery/docs/**/_build
+
+# flyctl launch added from chat-api/vendor/psr/container/.gitignore
+chat-api/vendor/psr/container/**/composer.lock
+chat-api/vendor/psr/container/**/composer.phar
+chat-api/vendor/psr/container/vendor
+
+# flyctl launch added from chat-api/vendor/psr/event-dispatcher/.gitignore
+chat-api/vendor/psr/event-dispatcher/vendor
+chat-api/vendor/psr/event-dispatcher/**/composer.lock
+
+# flyctl launch added from chat-api/vendor/ratchet/rfc6455/.gitignore
+chat-api/vendor/ratchet/rfc6455/**/.phpunit.result.cache
+chat-api/vendor/ratchet/rfc6455/**/composer.lock
+chat-api/vendor/ratchet/rfc6455/**/vendor
+chat-api/vendor/ratchet/rfc6455/**/tests/ab/reports
+chat-api/vendor/ratchet/rfc6455/**/reports
+fly.toml

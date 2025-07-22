@@ -30,9 +30,13 @@ while ! PGPASSWORD="$DB_PASSWORD" pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB
 done
 echo "Database is ready!"
 
+# Force Laravel to read fresh environment variables
+echo "Clearing cached configuration..."
+/usr/local/bin/php /var/www/html/artisan config:clear
+
 # Run migrations
 echo "Running database migrations..."
-/usr/local/bin/php /var/www/html/artisan migrate --force # Also updated PHP path here for consistency
+/usr/local/bin/php /var/www/html/artisan migrate --force
 echo "Migrations complete."
 
 echo "--> Release tasks finished."

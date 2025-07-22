@@ -1,9 +1,16 @@
-# File: chat-api/fly.toml
+# fly.toml app configuration file generated for nexus-chat-api on 2025-07-22T01:40:43-05:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
 app = 'nexus-chat-api'
 primary_region = 'gru'
+console_command = 'php /var/www/html/artisan tinker'
 
 [build]
-image = 'flyio/laravel'
+  [build.args]
+    NODE_VERSION = '18'
+    PHP_VERSION = '8.2'
 
 [env]
 APP_ENV = 'production'
@@ -19,19 +26,13 @@ FRONTEND_URL = "https://real-time-chat-app.fly.dev"
 SANCTUM_STATEFUL_DOMAINS = "real-time-chat-app.fly.dev"
 
 [http_service]
-internal_port = 8080
-force_https = true
-auto_stop_machines = true
-auto_start_machines = true
-min_machines_running = 0
-processes = ['app']
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
 
-[[vm]]
-memory = '1gb'
-cpu_kind = 'shared'
-cpus = 1
-
-# This section is for Reverb (Websockets)
 [[services]]
 protocol = 'tcp'
 internal_port = 8081
@@ -45,3 +46,8 @@ handlers = ['tls']
 app = ""
 reverb = "php artisan reverb:start --host=0.0.0.0 --port=8081"
 worker = "php artisan queue:work"
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

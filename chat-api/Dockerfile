@@ -42,6 +42,10 @@ RUN rm -f .env
 # Set correct permissions for Laravel storage
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
+RUN mkdir -p /var/run/php && \
+    chown -R www-data:www-data /var/run/php && \
+    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
 # Expose port 8080
 EXPOSE 8080
 

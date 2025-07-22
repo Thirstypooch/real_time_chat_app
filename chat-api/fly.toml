@@ -6,9 +6,6 @@ APP_ENV = "production"
 LOG_CHANNEL = "stderr"
 APP_URL = "https://chat-api-falling-dream-7373.fly.dev"
 DB_CONNECTION = "pgsql"
-DB_HOST = "chat-api-falling-dream-7373-db.flycast"
-DB_PORT = "5432"
-DB_DATABASE = "chat_api_falling_dream_7373"
 
 [build]
 dockerfile = 'Dockerfile'

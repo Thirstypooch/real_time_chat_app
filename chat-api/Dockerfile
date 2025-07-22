@@ -39,9 +39,7 @@ RUN composer install --no-interaction --no-dev --no-plugins --no-scripts --prefe
 
 RUN rm -f .env
 
-# Set correct permissions for Laravel storage
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
+# Create run directory and set correct permissions for PHP-FPM and Laravel
 RUN mkdir -p /var/run/php && \
     chown -R www-data:www-data /var/run/php && \
     chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache

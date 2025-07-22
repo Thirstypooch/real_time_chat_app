@@ -15,7 +15,8 @@
         "laravel/reverb": "^1.5",
         "laravel/sanctum": "^4.1",
         "laravel/socialite": "^5.21",
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.1",
+        "ext-pdo": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

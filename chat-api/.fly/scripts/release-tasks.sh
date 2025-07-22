@@ -7,19 +7,20 @@ if [ -z "$DATABASE_URL" ]; then
 fi
 
 # Parse DATABASE_URL
-DB_USER=$(echo "$DATABASE_URL" | awk -F'://' '{print $2}' | awk -F':' '{print $1}')
-DB_PASSWORD=$(echo "$DATABASE_URL" | awk -F':' '{print $3}' | awk -F'@' '{print $1}')
-DB_HOST=$(echo "$DATABASE_URL" | awk -F'@' '{print $2}' | awk -F':' '{print $1}')
-DB_PORT=$(echo "$DATABASE_URL" | awk -F':' '{print $4}' | awk -F'/' '{print $1}')
-DB_NAME=$(echo "$DATABASE_URL" | awk -F'/' '{print $NF}' | awk -F'?' '{print $1}')
+export DB_CONNECTION=pgsql
+export DB_HOST=$(echo "$DATABASE_URL" | awk -F'@' '{print $2}' | awk -F':' '{print $1}')
+export DB_PORT=$(echo "$DATABASE_URL" | awk -F':' '{print $4}' | awk -F'/' '{print $1}')
+export DB_DATABASE=$(echo "$DATABASE_URL" | awk -F'/' '{print $NF}' | awk -F'?' '{print $1}')
+export DB_USERNAME=$(echo "$DATABASE_URL" | awk -F'://' '{print $2}' | awk -F':' '{print $1}')
+export DB_PASSWORD=$(echo "$DATABASE_URL" | awk -F':' '{print $3}' | awk -F'@' '{print $1}')
 
 
 echo "--> Running release tasks..."
 
 # Wait for database
-echo "Connecting to database '$DB_NAME' on host '$DB_HOST'..."
+echo "Connecting to database '$DB_DATABASE' on host '$DB_HOST'..."
 counter=0
-while ! PGPASSWORD="$DB_PASSWORD" pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -q; do
+while ! pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USERNAME" -d "$DB_DATABASE" -q; do
     sleep 2
     counter=$((counter+1))
     if [ $counter -ge 30 ]; then

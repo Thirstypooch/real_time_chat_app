@@ -18,8 +18,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return Broadcast::auth($request);
     });
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store'])
-    ->middleware('throttle:daily');
+    Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store']);
     Route::post('/conversations/{conversation}/read', [ConversationController::class, 'markAsRead']);
     Route::get('/user', [AuthController::class, 'user']);
     Route::get('/conversations', [ConversationController::class, 'index']);

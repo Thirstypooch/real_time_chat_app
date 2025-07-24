@@ -29,7 +29,6 @@ COPY . .
 
 # Install Composer dependencies
 RUN composer install --no-dev --no-interaction --no-plugins --no-scripts --prefer-dist --optimize-autoloader
-RUN php artisan migrate --force
 
 # --- Final Image ---
 FROM base as final

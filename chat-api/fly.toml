@@ -19,19 +19,24 @@ DB_CONNECTION = 'pgsql'
 APP_URL = "https://nexus-chat-api.fly.dev"
 FRONTEND_URL = "https://real-time-chat-app.fly.dev"
 SANCTUM_STATEFUL_DOMAINS = "real-time-chat-app.fly.dev"
+BROADCAST_CONNECTION = 'reverb'
+REVERB_HOST = "nexus-chat-api.fly.dev"
+REVERB_PORT = 443
+REVERB_SCHEME = "https"
 
 [http_service]
 internal_port = 8080
 force_https = true
-auto_stop_machines = 'stop'
+auto_stop_machines = false
 auto_start_machines = true
-min_machines_running = 0
-processes = ['app']
+min_machines_running = 1
+processes = ['app', 'reverb']
 
-# This is the change: The reverb process is removed
+# Reverb process added back for WebSocket functionality
 [processes]
 app = "supervisord -c /etc/supervisor/supervisord.conf"
 worker = "php artisan queue:work"
+reverb = "php /var/www/html/artisan reverb:start --host=0.0.0.0 --port=8081"
 
 # The conflicting [[services]] blocks have been removed
 

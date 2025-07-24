@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y \
     supervisor
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_pgsql bcmath gd zip
+RUN docker-php-ext-install pdo_pgsql bcmath gd zip pcntl
 
 # Get the latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

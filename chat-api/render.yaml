@@ -1,0 +1,56 @@
+# Defines the version of the render.yaml blueprint specification.
+version: 1
+
+# Define the environment for this blueprint.
+# Render will prompt you to sync this with an existing environment.
+environment:
+  # Replace 'your-render-environment-name' with the actual name
+  # you gave the environment in the Render dashboard.
+  name: real_time_chat_app_api
+  fromExisting: true
+
+services:
+  # 1. The main Laravel Web Service (Nginx + FPM)
+  - type: web
+    name: nexus-chat-api
+    env: php
+    plan: free # Change to a paid plan for production
+    healthCheckPath: /up # Laravel's default health check route
+    build:
+      - command: "composer install --no-dev --optimize-autoloader"
+      - command: "php artisan optimize:clear"
+      - command: "php artisan migrate:fresh --seed --force" # Run migrations and seeding during build
+    startCommand: |
+      /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+    envVars:
+      - key: APP_URL
+        value: "${RENDER_EXTERNAL_URL}"
+      - key: SANCTUM_STATEFUL_DOMAINS
+        value: "${RENDER_EXTERNAL_URL_real-time-chat-app}" # Injects the frontend URL
+      - key: REVERB_HOST
+        value: "${RENDER_EXTERNAL_HOSTNAME_nexus-chat-reverb}" # Injects the Reverb service hostname
+      # NOTE: The GOOGLE_REDIRECT_URI will be automatically handled by Socialite
+      # based on the APP_URL and the route, but you can override it here if needed.
+
+  # 2. The Laravel Reverb WebSocket Server
+  - type: private
+    name: nexus-chat-reverb
+    env: php
+    plan: free
+    build:
+      - command: "composer install --no-dev --optimize-autoloader"
+      - command: "php artisan optimize:clear"
+    startCommand: "php artisan reverb:start --host=0.0.0.0 --port=10001"
+    envVars:
+      - key: REVERB_SERVER_PORT # Use the internal port for the service
+        value: 10001
+
+  # 3. The Queue Worker
+  - type: worker
+    name: nexus-chat-worker
+    env: php
+    plan: free
+    build:
+      - command: "composer install --no-dev --optimize-autoloader"
+      - command: "php artisan optimize:clear"
+    startCommand: "php artisan queue:work --tries=3"

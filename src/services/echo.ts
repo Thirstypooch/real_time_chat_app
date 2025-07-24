@@ -1,14 +1,14 @@
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 
-const pusherClient = new Pusher(window.runtimeConfig.VITE_REVERB_APP_KEY, {
-    wsHost: window.runtimeConfig.VITE_REVERB_HOST,
-    wsPort: Number(window.runtimeConfig.VITE_REVERB_PORT),
-    wssPort: Number(window.runtimeConfig.VITE_REVERB_PORT),
-    forceTLS: window.runtimeConfig.VITE_REVERB_SCHEME === 'https',
+const pusherClient = new Pusher(import.meta.env.VITE_REVERB_APP_KEY, {
+    wsHost: import.meta.env.VITE_REVERB_HOST,
+    wsPort: Number(import.meta.env.VITE_REVERB_PORT),
+    wssPort: Number(import.meta.env.VITE_REVERB_PORT),
+    forceTLS: import.meta.env.VITE_REVERB_SCHEME === 'https',
     enabledTransports: ['ws', 'wss'],
-    cluster: 'mt1',
-    authEndpoint: `${window.runtimeConfig.VITE_API_URL}/broadcasting/auth`,
+    cluster: 'mt1', // This can be a default value
+    authEndpoint: `${import.meta.env.VITE_API_URL}/broadcasting/auth`,
     auth: {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('api_token')}`,

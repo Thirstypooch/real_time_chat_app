@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-    baseURL: import.meta.env.VITE_API_URL, // Use Vite's env variable
+    baseURL: `${import.meta.env.VITE_API_URL}/api`,// Use Vite's env variable
     headers: {
         'Accept': 'application/json',
     },

@@ -24,7 +24,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('FRONTEND_URL', 'https://real-time-chat-app.fly.dev')],
+    'allowed_origins' => [env('FRONTEND_URL', 'https://real-time-chat-app-gy3u.onrender.com')],
 
     'allowed_origins_patterns' => [],
 

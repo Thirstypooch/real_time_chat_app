@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Services\ConversationService;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Config;
 
 class AuthController extends Controller
 {
@@ -86,7 +87,8 @@ class AuthController extends Controller
 
     public function googleRedirect(): RedirectResponse
     {
-        return Socialite::driver('google')-> stateless()->redirect();
+        $redirectUrl = Config::get('services.google.redirect');
+        return Socialite::driver('google')-> stateless()->redirect($redirectUrl);
     }
 
     /**

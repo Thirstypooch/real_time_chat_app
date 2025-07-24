@@ -1,48 +1,45 @@
-# Defines the version of the render.yaml blueprint specification.
+# render.yaml
+
 version: 1
 
-# Link to the environment you already created in the Render dashboard.
 environment:
-  name: real_time_chat_app_api # The name you gave your environment.
+  name: real_time_chat_app_api
   fromExisting: true
 
 services:
   # ------ BACKEND SERVICES ------
-
-  # 1. The main Laravel Web Service (Nginx + FPM)
   - type: web
     name: nexus-chat-api
-    env: php
+    runtime: php
     plan: free
-    # CRITICAL: Specifies the directory for this service.
     rootDir: ./chat-api
     healthCheckPath: /up
     build:
       - command: "composer install --no-dev --optimize-autoloader"
       - command: "php artisan optimize:clear"
-      # IMPORTANT: Run migrations during the build to prevent race conditions.
       - command: "php artisan migrate:fresh --seed --force"
     startCommand: "/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf"
     envVars:
       - key: APP_URL
-        value: "${RENDER_EXTERNAL_URL}"
+        fromService:
+          type: web
+          name: nexus-chat-api
+          property: url
       - key: SANCTUM_STATEFUL_DOMAINS
         fromService:
-          type: static
+          type: static_site # CORRECTED
           name: real-time-chat-app
           property: host
       - key: REVERB_HOST
         fromService:
-          type: pserv # Corrected type
+          type: pserv
           name: nexus-chat-reverb
           property: host
 
-  # 2. The Laravel Reverb WebSocket Server
-  - type: pserv # CORRECTED: The type for a Private Service is "pserv"
+  - type: pserv
     name: nexus-chat-reverb
-    env: php
+    runtime: php
     plan: free
-    # CRITICAL: Specifies the directory for this service.
     rootDir: ./chat-api
     build:
       - command: "composer install --no-dev --optimize-autoloader"
@@ -52,12 +49,10 @@ services:
       - key: REVERB_SERVER_PORT
         value: 10001
 
-  # 3. The Queue Worker
   - type: worker
     name: nexus-chat-worker
-    env: php
+    runtime: php
     plan: free
-    # CRITICAL: Specifies the directory for this service.
     rootDir: ./chat-api
     build:
       - command: "composer install --no-dev --optimize-autoloader"
@@ -65,16 +60,12 @@ services:
     startCommand: "php artisan queue:work --tries=3"
 
   # ------ FRONTEND SERVICE ------
-
-  # 4. The React Static Site
-  - type: static
+  - type: static_site # CORRECTED
     name: real-time-chat-app
     plan: free
-    # CRITICAL: This service runs from the root where package.json is.
     rootDir: ./
     build:
       - command: "npm install && npm run build"
-    # This directory is served on Render's CDN.
     publishDir: ./dist
     envVars:
       - key: VITE_API_URL
@@ -88,7 +79,7 @@ services:
           key: REVERB_APP_KEY
       - key: VITE_REVERB_HOST
         fromService:
-          type: pserv # Corrected type
+          type: pserv
           name: nexus-chat-reverb
           property: host
       - key: VITE_REVERB_PORT

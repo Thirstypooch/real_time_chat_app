@@ -7,7 +7,7 @@ const pusherClient = new Pusher(import.meta.env.VITE_REVERB_APP_KEY, {
     wssPort: Number(import.meta.env.VITE_REVERB_PORT),
     forceTLS: import.meta.env.VITE_REVERB_SCHEME === 'https',
     enabledTransports: ['ws', 'wss'],
-    cluster: 'mt1', // This can be a default value
+    cluster: 'mt1',
     authEndpoint: `${import.meta.env.VITE_API_URL}/broadcasting/auth`,
     auth: {
         headers: {

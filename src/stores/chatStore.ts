@@ -17,6 +17,10 @@ interface ChatState {
     toggleTheme: () => void;
     setStreamingMessage: (message: StreamingMessage | null) => void;
     appendStreamingMessage: (chunk: string) => void;
+    onlineUserIds: number[];
+    setOnlineUsers: (userIds: number[]) => void;
+    addOnlineUser: (userId: number) => void;
+    removeOnlineUser: (userId: number) => void;
 }
 
 export const useChatStore = create<ChatState>((set) => ({
@@ -41,4 +45,8 @@ export const useChatStore = create<ChatState>((set) => ({
             },
         };
     }),
+    onlineUserIds: [],
+    setOnlineUsers: (userIds) => set({ onlineUserIds: userIds }),
+    addOnlineUser: (userId) => set((state) => ({ onlineUserIds: [...state.onlineUserIds, userId] })),
+    removeOnlineUser: (userId) => set((state) => ({ onlineUserIds: state.onlineUserIds.filter(id => id !==  userId) }))
 }));

@@ -11,12 +11,15 @@ const ContactItem: React.FC<ContactItemProps> = ({ conversation }) => {
   const currentUser = useChatStore(state => state.currentUser);
   const activeConversationId = useChatStore(state => state.activeConversationId);
   const setActiveConversationId = useChatStore(state => state.setActiveConversationId);
-  const { mutate: markAsRead } = useMarkAsRead();
-  const contact = conversation.participants.find(p => p.id !== currentUser?.id);
+  const onlineUserIds = useChatStore(state => state.onlineUserIds);
 
+  const { mutate: markAsRead } = useMarkAsRead();
+  const contact = conversation.participants.find(p => p.id !==  currentUser?.id);
   if (!contact || !currentUser) return null;
 
   const isActive = activeConversationId ===   conversation.id;
+
+  const isOnline = onlineUserIds.includes(contact.id);
 
   const handleClick = () => {
     setActiveConversationId(Number(conversation.id));
@@ -43,11 +46,7 @@ const ContactItem: React.FC<ContactItemProps> = ({ conversation }) => {
         <div className="absolute bottom-0 right-0">
           <div 
             className={`h-3 w-3 rounded-full border-2 border-white dark:border-gray-900 ${
-              contact.status === 'online' 
-                ? 'bg-green-500' 
-                : contact.status === 'away' 
-                  ? 'bg-yellow-500' 
-                  : 'bg-gray-400'
+                isOnline ? 'bg-green-500' : 'bg-gray-400'
             }`}
           />
         </div>

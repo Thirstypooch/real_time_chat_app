@@ -14,6 +14,9 @@ const ContactList: React.FC = () => {
   const { data: conversations = [], isLoading } = useQuery<Conversation[]>({
     queryKey: ['conversations'],
     queryFn: () => apiClient.get('/conversations').then(response => response.data),
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      staleTime: 1000 * 60 * 5,
   });
 
   const filteredConversations = searchTerm.trim() ===   ''

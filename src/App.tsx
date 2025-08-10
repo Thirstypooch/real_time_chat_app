@@ -41,7 +41,7 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/auth/callback" element={<AuthCallbackPage />} />
       <Route path="/app" element={
-        <ProtectedRoute>
+        <ProtectedRoute user={user}>
           <ChatPage />
         </ProtectedRoute>
       } />

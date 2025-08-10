@@ -21,6 +21,15 @@ const echo = new Echo({
     broadcaster: 'pusher',
     client: pusherClient,
 });
+
+export const updateEchoToken = (token: string | null): void => {
+    const bearerToken = `Bearer ${token}`;
+
+    if (echo.connector.options.auth?.headers) {
+        echo.connector.options.auth.headers.Authorization = bearerToken;
+    }
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const pusherConnector = echo.connector as any;
 

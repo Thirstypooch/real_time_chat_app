@@ -4,6 +4,7 @@ import { useChatStore } from '../stores/chatStore';
 import { useQueryClient } from '@tanstack/react-query';
 import { User } from '../types';
 import { Loader2 } from 'lucide-react';
+import { updateEchoToken } from '../services/echo';
 
 const AuthCallbackPage = () => {
     const [searchParams] = useSearchParams();
@@ -20,6 +21,8 @@ const AuthCallbackPage = () => {
                 const user: User = JSON.parse(decodeURIComponent(userString));
 
                 localStorage.setItem('api_token', token);
+
+                updateEchoToken(token);
 
                 setUser(user);
 

@@ -2,11 +2,13 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import ChatWindow from '../components/Chat/ChatWindow';
 import { useChatStore } from '../stores/chatStore';
 import { useEcho } from '../hooks/useEcho';
+import { usePresenceChannel } from '../hooks/usePresenceChannel';
 
 function ChatPage() {
   const activeConversationId = useChatStore(state => state.activeConversationId);
 
   useEcho(activeConversationId);
+  usePresenceChannel();
 
   return (
     <div className="h-screen overflow-hidden flex bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">

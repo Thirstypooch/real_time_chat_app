@@ -8,7 +8,7 @@ import AuthCallbackPage from './pages/AuthCallbackPage';
 import ChatPage from './pages/ChatPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { Loader2 } from 'lucide-react';
-import { updateEchoToken } from './services/echo';
+
 
 function App() {
     const setUser = useChatStore((state) => state.setUser);
@@ -19,10 +19,10 @@ function App() {
         if (user) {
             setUser(user);
             const token = localStorage.getItem('api_token');
-            updateEchoToken(token);
+
         } else if (isError) {
             localStorage.removeItem('api_token');
-            updateEchoToken(null)
+
             setUser(null);
             if (window.location.pathname.startsWith('/app')) {
                 navigate('/login');

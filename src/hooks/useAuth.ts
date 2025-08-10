@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import apiClient from '../services/api';
 import { useChatStore } from '../stores/chatStore';
 import { User } from '../types';
-import { updateEchoToken } from '../services/echo';
 
 
 interface LoginCredentials {
@@ -25,7 +24,7 @@ export const useLogin = () => {
         apiClient.post<LoginResponse>('/login', credentials).then((response) => response.data),
     onSuccess: (data) => {
       localStorage.setItem('api_token', data.token);
-      updateEchoToken(data.token);
+
       setUser(data.user);
       navigate('/app');
     },
@@ -53,14 +52,14 @@ export const useLogout = () => {
     onSuccess: () => {
       navigate('/login');
       localStorage.removeItem('api_token');
-      updateEchoToken(null);
+
       setUser(null);
       setActiveConversationId(null);
       queryClient.removeQueries();
     },
     onError: () => {
       localStorage.removeItem('api_token');
-      updateEchoToken(null);
+
       setUser(null);
       setActiveConversationId(null);
       queryClient.clear();

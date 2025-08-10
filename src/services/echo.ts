@@ -1,42 +1,34 @@
 import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
+import 'pusher-js'; // Import pusher-js for side-effects
+import apiClient from './api';
 
-const pusherClient = new Pusher(import.meta.env.VITE_REVERB_APP_KEY, {
+const echo = new Echo({
+    // Pass all connection options directly to Echo
+    broadcaster: 'pusher',
+    key: import.meta.env.VITE_REVERB_APP_KEY,
     wsHost: import.meta.env.VITE_REVERB_HOST,
     wsPort: Number(import.meta.env.VITE_REVERB_PORT),
     wssPort: Number(import.meta.env.VITE_REVERB_PORT),
     forceTLS: import.meta.env.VITE_REVERB_SCHEME === 'https',
     enabledTransports: ['ws', 'wss'],
     cluster: 'mt1',
-    authEndpoint: `${import.meta.env.VITE_API_URL}/broadcasting/auth`,
-    auth: {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('api_token')}`,
-            Accept: 'application/json',
+
+    // Our custom authorizer remains the same
+    authorizer: (channel: { name: string }) => ({
+        authorize: (socketId: string, callback: (error: Error | null, authInfo: any) => void) => {
+            apiClient.post('/broadcasting/auth', {
+                socket_id: socketId,
+                channel_name: channel.name,
+            })
+                .then(response => {
+                    callback(null, response.data);
+                })
+                .catch(error => {
+                    console.error('Broadcasting Authorization Error:', error);
+                    callback(error, null);
+                });
         },
-    },
-});
-
-const echo = new Echo({
-    broadcaster: 'pusher',
-    client: pusherClient,
-});
-
-export const updateEchoToken = (token: string | null): void => {
-    const bearerToken = `Bearer ${token}`;
-
-    if (echo.connector.options.auth?.headers) {
-        echo.connector.options.auth.headers.Authorization = bearerToken;
-    }
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const pusherConnector = echo.connector as any;
-
-pusherConnector.pusher.connection.bind('connected', () => {
-    if (pusherConnector.options.auth?.headers) {
-        pusherConnector.options.auth.headers.Authorization = `Bearer ${localStorage.getItem('api_token')}`;
-    }
+    }),
 });
 
 export default echo;

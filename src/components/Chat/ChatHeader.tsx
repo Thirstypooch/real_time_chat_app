@@ -9,6 +9,7 @@ import apiClient from "../../services/api.ts";
 const ChatHeader: React.FC = () => {
   const currentUser = useChatStore(state => state.currentUser);
   const activeConversationId = useChatStore(state => state.activeConversationId);
+  const onlineUserIds = useChatStore(state => state.onlineUserIds);
 
   const { data: conversations = [] } = useQuery<Conversation[]>({
     queryKey: ['conversations'],
@@ -25,11 +26,19 @@ const ChatHeader: React.FC = () => {
   }
 
   const contact = activeConversation.participants.find(
-      (p: User) => p.id !==   currentUser.id
+      (p: User) => p.id !== currentUser.id
   );
+
   if (!contact) {
     return null;
   }
+
+  const isOnline = onlineUserIds.includes(contact.id);
+
+  const contactWithStatus: User = {
+    ...contact,
+    status: isOnline ? 'online' : 'offline',
+  };
 
   return (
       <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 flex items-center justify-between">
@@ -41,7 +50,7 @@ const ChatHeader: React.FC = () => {
           />
           <div className="ml-3">
             <h2 className="font-medium text-gray-900 dark:text-white">{contact.name}</h2>
-            <UserStatus user={contact} />
+            <UserStatus user={contactWithStatus} />
           </div>
         </div>
 

@@ -15,11 +15,11 @@ class ConversationService
      */
     public function syncUserConversations(User $userToSync): void
     {
-        if ($userToSync-> is_ai) {
+        if ($userToSync->is_ai) {
             return;
         }
 
-        $allOtherUsers = User:: where('id', '!=', $userToSync-> id)-> get();
+        $allOtherUsers = User::where('id', '!=', $userToSync->id)->get();
 
         foreach ($allOtherUsers as $otherUser) {
             $conversationExists = DB::table('conversation_user as cu1')

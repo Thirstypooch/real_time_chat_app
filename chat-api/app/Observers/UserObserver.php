@@ -9,6 +9,6 @@ class UserObserver
 {
     public function created(User $user): void
     {
-        resolve(ConversationService::class)-> syncUserConversations($user);
+        resolve(ConversationService::class)->syncUserConversations($user);
     }
 }

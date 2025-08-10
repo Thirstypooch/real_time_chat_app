@@ -1,19 +1,19 @@
 import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useChatStore } from '../stores/chatStore';
+import { User } from '../types';
 
 interface ProtectedRouteProps {
   children: ReactNode;
+  user: User | undefined | null;
 }
 
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const currentUser = useChatStore(state => state.currentUser);
+const ProtectedRoute = ({ children, user }: ProtectedRouteProps) => {
 
-  if (!currentUser) {
+  if (!user) {
     return <Navigate to="/login" />;
   }
 
-  return <>{children}</>;
+  return <> {children}</>;
 };
 
 export default ProtectedRoute;

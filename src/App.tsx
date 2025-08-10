@@ -9,6 +9,7 @@ import ChatPage from './pages/ChatPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { Loader2 } from 'lucide-react';
 
+
 function App() {
     const setUser = useChatStore((state) => state.setUser);
     const navigate = useNavigate();
@@ -17,8 +18,11 @@ function App() {
     useEffect(() => {
         if (user) {
             setUser(user);
+            const token = localStorage.getItem('api_token');
+
         } else if (isError) {
             localStorage.removeItem('api_token');
+
             setUser(null);
             if (window.location.pathname.startsWith('/app')) {
                 navigate('/login');
@@ -41,7 +45,7 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/auth/callback" element={<AuthCallbackPage />} />
       <Route path="/app" element={
-        <ProtectedRoute>
+        <ProtectedRoute user={user}>
           <ChatPage />
         </ProtectedRoute>
       } />

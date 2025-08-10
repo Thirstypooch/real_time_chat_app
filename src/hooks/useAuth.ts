@@ -24,6 +24,7 @@ export const useLogin = () => {
         apiClient.post<LoginResponse>('/login', credentials).then((response) => response.data),
     onSuccess: (data) => {
       localStorage.setItem('api_token', data.token);
+
       setUser(data.user);
       navigate('/app');
     },
@@ -49,14 +50,16 @@ export const useLogout = () => {
   return useMutation({
     mutationFn: () => apiClient.post('/logout'),
     onSuccess: () => {
+      navigate('/login');
       localStorage.removeItem('api_token');
+
       setUser(null);
       setActiveConversationId(null);
-      queryClient.clear(); // Clear all cached data
-      navigate('/login');
+      queryClient.removeQueries();
     },
-    onError: () => { // Still log out on frontend even if API fails
+    onError: () => {
       localStorage.removeItem('api_token');
+
       setUser(null);
       setActiveConversationId(null);
       queryClient.clear();

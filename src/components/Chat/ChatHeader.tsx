@@ -12,7 +12,8 @@ const ChatHeader: React.FC = () => {
 
   const { data: conversations = [] } = useQuery<Conversation[]>({
     queryKey: ['conversations'],
-    queryFn: () => apiClient.get('/conversations').then(response => response.data)
+    queryFn: () => apiClient.get('/conversations').then(response => response.data),
+    enabled: !!currentUser,
   });
 
   const activeConversation = conversations.find(
